@@ -1,0 +1,92 @@
+/*
+<section className="p-4 border rounded-lg">
+<h2 className="font-semibold mb-3">Proposed (Automated)</h2>
+<label className="block text-sm mb-2">Reduced time per invoice (hours)
+<input value={reducedTimeHours} onChange={e=>setReducedTimeHours(Number(e.target.value)||0)} step="0.01" type="number" min="0" className="mt-1 w-full p-2 border rounded" />
+</label>
+<label className="block text-sm mb-2">Reduced error rate (%)
+<input value={reducedErrorRatePercent} onChange={e=>setReducedErrorRatePercent(Number(e.target.value)||0)} step="0.1" type="number" min="0" max="100" className="mt-1 w-full p-2 border rounded" />
+</label>
+<label className="block text-sm mb-2">Faster payment (days) — estimated improvement
+<input value={fasterPaymentDays} onChange={e=>setFasterPaymentDays(Number(e.target.value)||0)} type="number" min="0" className="mt-1 w-full p-2 border rounded" />
+</label>
+<label className="block text-sm mb-2">Implementation cost ({currencySymbol})
+<input value={implementationCost} onChange={e=>setImplementationCost(Number(e.target.value)||0)} step="0.01" type="number" min="0" className="mt-1 w-full p-2 border rounded" />
+</label>
+</section>
+</div>
+
+
+<div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4">
+<div className="p-4 border rounded-lg">
+<h3 className="text-sm text-gray-500">Baseline Annual Cost</h3>
+<div className="text-xl font-semibold mt-2">{formatMoney(results.baselineAnnualCost)}</div>
+</div>
+
+
+<div className="p-4 border rounded-lg">
+<h3 className="text-sm text-gray-500">Automated Annual Cost</h3>
+<div className="text-xl font-semibold mt-2">{formatMoney(results.automatedAnnualCost)}</div>
+</div>
+
+
+<div className="p-4 border rounded-lg">
+<h3 className="text-sm text-gray-500">Annual Savings</h3>
+<div className="text-xl font-semibold mt-2">{formatMoney(results.annualSavings)}</div>
+</div>
+</div>
+
+
+<div className="mt-4 grid grid-cols-1 md:grid-cols-3 gap-4">
+<div className="p-4 border rounded-lg">
+<h3 className="text-sm text-gray-500">ROI</h3>
+<div className="text-xl font-semibold mt-2">{isFinite(results.roiPercent) ? ${results.roiPercent.toFixed(1)}% : '—'}</div>
+</div>
+
+
+<div className="p-4 border rounded-lg">
+<h3 className="text-sm text-gray-500">Payback Period</h3>
+<div className="text-xl font-semibold mt-2">{formatYears(results.paybackPeriodYears)}</div>
+</div>
+
+
+<div className="p-4 border rounded-lg">
+<h3 className="text-sm text-gray-500">Time saved / year</h3>
+<div className="text-xl font-semibold mt-2">{results.timeSavingsHoursPerYear.toFixed(1)} hrs</div>
+</div>
+</div>
+
+
+<div className="mt-6 p-4 border rounded-lg">
+<h2 className="font-semibold mb-3">Visualization</h2>
+<div style={{maxWidth: '700px'}}>
+<Bar data={chartData} options={{responsive: true, plugins: {legend: {position: 'top'}}}} />
+</div>
+</div>
+
+
+<div className="mt-6 flex gap-3">
+<button onClick={() => { navigator.clipboard.writeText(JSON.stringify({inputs:{invoicesPerMonth,timePerInvoiceHours,costPerHour,errorRatePercent,reducedTimeHours,reducedErrorRatePercent,fasterPaymentDays,implementationCost}, results})); alert('Simulation copied to clipboard as JSON'); }} className="px-4 py-2 bg-indigo-600 text-white rounded">Copy JSON</button>
+<button onClick={() => { const csvRows = [
+['metric','value'],
+['baselineAnnualCost', results.baselineAnnualCost],
+['automatedAnnualCost', results.automatedAnnualCost],
+['annualSavings', results.annualSavings],
+['roiPercent', results.roiPercent],
+['paybackYears', results.paybackPeriodYears]
+];
+const csv = csvRows.map(r => r.join(',')).join('\n');
+const blob = new Blob([csv], {type: 'text/csv'});
+const url = URL.createObjectURL(blob);
+const a = document.createElement('a');
+a.href = url; a.download = 'roi_simulation.csv'; a.click(); URL.revokeObjectURL(url);
+}} className="px-4 py-2 border rounded">Download CSV</button>
+</div>
+
+
+<footer className="mt-6 text-xs text-gray-500">Formulas used: Baseline Annual Cost = Invoices/month × 12 × Time per invoice × Cost per hour. ROI (%) = (Annual Savings − Implementation Cost) / Implementation Cost × 100. Payback = Implementation Cost / Annual Savings.</footer>
+</div>
+</div>
+);
+}
+
